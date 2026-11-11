@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- Production Enterprise WiX Toolset Installer Definition -->
+  <Product Id="*"
+           Name="TitanCalc Scientific Desktop Calculator"
+           Language="1033"
+           Version="1.0.0.0"
+           Manufacturer="Titan Systems Architecture"
+           UpgradeCode="5B8C248A-8519-4C92-9426-3C6BD7F7A250">
+
+    <Package InstallerVersion="405"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Description="Ultra-Low Latency Scientific Desktop Calculator for Windows 10/11"
+             Comments="RAM &lt; 15 MB, cold launch &lt; 100 ms, Casio fx-991 Natural Textbook LCD" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Feature Definition -->
+    <Feature Id="ProductFeature" Title="TitanCalc Application" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <!-- Directory Hierarchy -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="TitanCalc" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="TitanCalc" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+
+    <!-- Component Group -->
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="3A9B2E8C-1456-427A-9A8C-2D881B9A5E12" Win64="yes">
+        <File Id="TitanCalcEXE"
+              Name="TitanCalc.exe"
+              Source="..\..\bin\TitanCalc.exe"
+              KeyPath="yes"
+              Checksum="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Start Menu Shortcut -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="7D29F38E-506B-4148-A81C-FE02B19D5A34">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="TitanCalc fx-991 Pro"
+                  Description="Scientific Desktop Calculator"
+                  Target="[INSTALLFOLDER]TitanCalc.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\TitanSystems\TitanCalc" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Desktop Shortcut -->
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="9823BC41-59D8-4441-A48E-5F8BC70D98E1">
+        <Shortcut Id="ApplicationDesktopShortcut"
+                  Name="TitanCalc"
+                  Description="Ultra-low latency scientific calculator"
+                  Target="[INSTALLFOLDER]TitanCalc.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\TitanSystems\TitanCalc" Name="desktop_shortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- NGEN Native Pre-compilation Custom Actions -->
+    <CustomAction Id="NGenInstall"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand="[WindowsFolder]Microsoft.NET\Framework64\v4.0.30319\ngen.exe install &quot;[INSTALLFOLDER]TitanCalc.exe&quot; /nologo /silent"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="no" />
+
+    <CustomAction Id="NGenUninstall"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand="[WindowsFolder]Microsoft.NET\Framework64\v4.0.30319\ngen.exe uninstall &quot;[INSTALLFOLDER]TitanCalc.exe&quot; /nologo /silent"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="no" />
+
+    <InstallExecuteSequence>
+      <Custom Action="NGenInstall" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action="NGenUninstall" Before="RemoveFiles">Installed AND (REMOVE="ALL")</Custom>
+    </InstallExecuteSequence>
+
+    <!-- UI Customization -->
+    <UIRef Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+  </Product>
+</Wix>
