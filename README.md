@@ -1,4 +1,4 @@
-# TitanCalc(CalC) — Ultra-Low Latency, Near-Zero Memory Scientific Desktop Calculator
+# TitanCalc — Ultra-Low Latency, Near-Zero Memory Scientific Desktop Calculator
 ### High-Performance Native Desktop Architecture for Windows 10 & 11
 
 Designed and architected by a Principal Systems Software Engineer and Windows Desktop Performance Specialist.
@@ -103,7 +103,7 @@ Designed and architected by a Principal Systems Software Engineer and Windows De
    - Date arithmetic and business day calculator (excluding weekends).
 6. **Memory-Managed Calculation History Ledger (`HistoryLedger`)**:
    - Configurable retention windows: `30 Minutes` (auto-purge on idle), `8 Hours` (single workday session), or `Persistent / Forever`.
-   - Stored in a high-speed flat binary file under `%LOCALAPPDATA%\TitanCalc(CalC)\history.dat`.
+   - Stored in a high-speed flat binary file under `%LOCALAPPDATA%\TitanCalc\history.dat`.
    - Interactive recall: double-click any past calculation to inject the expression or result into the active cursor position as an `ANS` token.
 7. **Always-On-Top / Mini-Floating HUD Mode**:
    - Global hotkey `Ctrl + Shift + Space` pins the calculator as a compact, semi-transparent (88% opacity) HUD overlay on top of CAD, IDEs, or spreadsheets.
@@ -113,10 +113,10 @@ Designed and architected by a Principal Systems Software Engineer and Windows De
 ## 6. Project Structure
 
 ```
-TitanCalc(CalC)/
+TitanCalc/
 ├── Build.ps1                        # 1-Click build & verification automation script
 ├── bin/
-│   └── TitanCalc(CalC).exe                # 106 KB Standalone Portable Executable
+│   └── TitanCalc.exe                # 106 KB Standalone Portable Executable
 ├── src/
 │   ├── Program.cs                   # Entry point with cold memory trimming
 │   ├── Engine/
@@ -142,8 +142,8 @@ TitanCalc(CalC)/
 │   │   ├── CalculatorButton.cs      # Dual-mode flat fluid vs sculpted 3D keycaps
 │   │   └── MainForm.cs              # Layout coordinator, collapsible drawer, module tabs
 │   └── Packaging/
-│       ├── TitanCalc(CalC).wxs            # WiX Toolset enterprise MSI installer definition
-│       ├── TitanCalc(CalC).iss            # Inno Setup single-file installer script
+│       ├── TitanCalc.wxs            # WiX Toolset enterprise MSI installer definition
+│       ├── TitanCalc.iss            # Inno Setup single-file installer script
 │       └── BuildMsi.ps1             # MSI automation script
 └── README.md                        # Architectural specification & documentation
 ```
@@ -165,28 +165,28 @@ Or compile directly using the built-in Microsoft Visual C# Compiler (`csc.exe`):
     /platform:anycpu `
     /target:winexe `
     /r:System.dll,System.Drawing.dll,System.Windows.Forms.dll,System.Numerics.dll,System.Core.dll `
-    /out:bin\TitanCalc(CalC).exe `
+    /out:bin\TitanCalc.exe `
     src\*.cs src\Engine\*.cs src\Modules\*.cs src\Storage\*.cs src\UI\*.cs
 ```
 
 ### 7.2 Native Pre-Compilation with NGEN (Sub-100ms Cold Launch)
 To eliminate JIT compilation latency entirely on end-user machines:
 ```powershell
-& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe" install bin\TitanCalc(CalC).exe /nologo /silent
+& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe" install bin\TitanCalc.exe /nologo /silent
 ```
 
 ### 7.3 Building the Enterprise `.msi` Installer via WiX Toolset
 Using WiX v3:
 ```powershell
-candle.exe src\Packaging\TitanCalc(CalC).wxs -out bin\TitanCalc(CalC).wixobj
-light.exe bin\TitanCalc(CalC).wixobj -out bin\TitanCalc(CalC).msi -ext WixUIExtension
+candle.exe src\Packaging\TitanCalc.wxs -out bin\TitanCalc.wixobj
+light.exe bin\TitanCalc.wixobj -out bin\TitanCalc.msi -ext WixUIExtension
 ```
 Using WiX v4/v5:
 ```powershell
-wix build src\Packaging\TitanCalc(CalC).wxs -o bin\TitanCalc(CalC).msi
+wix build src\Packaging\TitanCalc.wxs -o bin\TitanCalc.msi
 ```
 
 ### 7.4 Building the Portable Setup Package via Inno Setup
 ```powershell
-iscc.exe src\Packaging\TitanCalc(CalC).iss
+iscc.exe src\Packaging\TitanCalc.iss
 ```
