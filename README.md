@@ -1,6 +1,7 @@
 # TitanCalc — Ultra-Low Latency, Near-Zero Memory Scientific Desktop Calculator
 ### High-Performance Native Desktop Architecture for Windows 10 & 11
 
+
 Designed and architected by a Principal Systems Software Engineer and Windows Desktop Performance Specialist.
 
 ---
